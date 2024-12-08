@@ -15,10 +15,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Запуск Semgrep для статического анализа кода
-      uses: returntocorp/semgrep-action@v2
+      uses: returntocorp/semgrep-action@v2.0.3
       with:
         config: 'p/r2c'
-  
+
     - name: Установка Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -37,7 +37,7 @@ jobs:
         tags: melnik887/api_calculator:latest
 
     - name: Сканирование Docker образа с Trivy
-      uses: aquasecurity/trivy-action@v1
+      uses: aquasecurity/trivy-action@v0.16.1
       with:
         image-ref: melnik887/api_calculator:latest
         format: 'table'
