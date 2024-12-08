@@ -38,12 +38,17 @@ jobs:
         with:
           config: p/python
 
-      # Шаг 5: Сборка Docker-образа
+      # Шаг 5: Определение версии приложения
+      - name: Set Application Version
+        id: set_version
+        run: echo "APP_VERSION=${{ github.run_number }}" >> $GITHUB_ENV
+
+      # Шаг 6: Сборка Docker-образа с переменной окружения
       - name: Build Docker image
         run: |
-          docker build -t melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }} .
+          docker build --build-arg APP_VERSION=${{ env.APP_VERSION }} -t melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }} .
 
-      # Шаг 6: Запуск Trivy для сканирования Docker-образа на наличие уязвимостей (0.29.0)
+      # Шаг 7: Запуск Trivy для сканирования Docker-образа на наличие уязвимостей (0.29.0)
       - name: Run Trivy scan on Docker image
         uses: aquasecurity/trivy-action@master
         with:
@@ -51,14 +56,14 @@ jobs:
           format: 'table'
           severity: 'CRITICAL,HIGH'
 
-      # Шаг 7: Вход в Docker Hub
+      # Шаг 8: Вход в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # Шаг 8: Пуш Docker-образа с версионным тегом и latest
+      # Шаг 9: Пуш Docker-образа с версионным тегом и latest
       - name: Push Docker image with version tag
         run: |
           docker push melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }}

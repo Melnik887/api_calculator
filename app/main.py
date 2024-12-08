@@ -1,10 +1,14 @@
+import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+
+# Получаем версию из переменной окружения, по умолчанию "1.0.0"
+app_version = os.getenv("APP_VERSION", "1.0.0")
 
 app = FastAPI(
     title="API Калькулятор",
     description="Простой API для выполнения арифметических операций.",
-    version="1.0.0"
+    version=app_version
 )
 
 class Calculation(BaseModel):
