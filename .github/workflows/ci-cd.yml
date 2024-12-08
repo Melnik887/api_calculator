@@ -28,7 +28,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: yourdockerhubusername/api_calculator:latest
+        tags: melnik887/api_calculator:latest
 
     - name: Деплой на сервер (опционально)
       run: echo "Деплой не настроен"
