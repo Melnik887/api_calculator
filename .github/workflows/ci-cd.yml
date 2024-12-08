@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 # Права доступа для пайплайна
 permissions:
-  contents: write  # Разрешает запись содержимого репозитория
+  contents: write
 
 # Триггер: запускать пайплайн при пуше в ветку main
 on:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Использовать последнюю версию Ubuntu для выполнения задач
+    runs-on: ubuntu-latest
 
     steps:
       # Шаг 1: Проверка кода из репозитория
@@ -32,9 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r app/requirements.txt
 
-      # Шаг 4: Запуск Semgrep для статического анализа кода
+      # Шаг 4: Запуск Semgrep для статического анализа кода (v1)
       - name: Run Semgrep for Static Code Analysis
-        uses: returntocorp/semgrep-action@v2.36.1
+        uses: returntocorp/semgrep-action@v1
         with:
           config: p/python
 
@@ -43,9 +43,9 @@ jobs:
         run: |
           docker build -t melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }} .
 
-      # Шаг 6: Запуск Trivy для сканирования Docker-образа на наличие уязвимостей
+      # Шаг 6: Запуск Trivy для сканирования Docker-образа на наличие уязвимостей (0.29.0)
       - name: Run Trivy scan on Docker image
-        uses: aquasecurity/trivy-action@v0.30.1
+        uses: aquasecurity/trivy-action@v0.29.0
         with:
           image-ref: melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }}
           format: 'table'
@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # Шаг 8: Пуш Docker-образа с версионным тегом и тегом latest
+      # Шаг 8: Пуш Docker-образа с версионным тегом и latest
       - name: Push Docker image with version tag
         run: |
           docker push melnik887/api_calculator:${{ github.run_number }}.${{ github.run_id }}
